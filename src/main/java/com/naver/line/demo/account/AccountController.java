@@ -34,7 +34,11 @@ public class AccountController {
   /**
    * 3. 계좌 이체 한도 수정
    */
-  
+  @PutMapping(value = "/{id}/transfer-limit")
+  public ApiResult<AccountDto> updateTransferLimit (@RequestHeader("X-USER-ID") Integer userId, @PathVariable(value = "id") int id, @RequestBody AccountDto accountDto) {
+      AccountDto ret = accountService.updateTransferLimit(userId, id, accountDto);
+      return success(ret);
+  }
   /**
    * 5. 계좌 입출금 내역
    */

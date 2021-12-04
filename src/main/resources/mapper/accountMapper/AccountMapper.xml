@@ -87,8 +87,16 @@
     </insert>
     <update id="updateState">
         UPDATE ACCOUNTS
-            SET STATUS = #{status}
-                , UPDATED_AT = CURRENT_TIMESTAMP
+        SET STATUS = #{status}
+            , UPDATED_AT = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+            AND ID = #{id}
+    </update>
+    <update id="updateTransferLimit">
+        UPDATE ACCOUNTS
+        SET TRANSFER_LIMIT
+            , DAILY_TRANSFER_LIMIT
+            , UPDATED_AT = CURRENT_TIMESTAMP
         WHERE 1 = 1
             AND ID = #{id}
     </update>

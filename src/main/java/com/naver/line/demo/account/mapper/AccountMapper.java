@@ -14,4 +14,5 @@ public interface AccountMapper {
     int checkNumberDupl(AccountDto accountDto);
     int createAccount(AccountDto accountDto);
     int updateState(AccountDto accountDto);
+    int updateTransferLimit(AccountDto accountDto);
 }
