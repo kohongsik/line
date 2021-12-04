@@ -161,6 +161,6 @@ public class TransferServiceImpl implements TransferService{
         // 응답으로 출금 거래 정보를 내려줍니다.
         transferMapper.createTransfer(transferDto);
 
-        return null;
+        return transferMapper.find(transferDto);
     }
 }

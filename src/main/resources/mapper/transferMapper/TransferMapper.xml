@@ -7,9 +7,31 @@
         FROM BALANCE_TRANSACTIONS
         WHERE 1 = 1
             AND USER_ID = #{userId}
-            AND ACCOUNT_ID
+            AND ACCOUNT_ID = (
+                SELECT ID
+                FROM ACCOUNTS
+                WHERE 1 = 1
+                  AND NUMBER = #{senderAccountNumber}
+                LIMIT 1
+            )
             AND TO_CHAR(CREATED_AT, 'YYYYMMDD') = TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')
             AND TYPE = 'WITHDRAW'
+    </select>
+    <select id="find" resultType="com.naver.line.demo.transfer.dto.TransferDto">
+        SELECT
+            SUM(AMOUNT)
+        FROM BALANCE_TRANSACTIONS
+        WHERE 1 = 1
+          AND USER_ID = #{userId}
+          AND ACCOUNT_ID = (
+            SELECT ID
+            FROM ACCOUNTS
+            WHERE 1 = 1
+              AND NUMBER = #{senderAccountNumber}
+            LIMIT 1
+          )
+          AND TYPE = 'WITHDRAW'
+        ORDER BY CREATED_AT
     </select>
     <insert id="createBalanceTransaction">
         INSERT INTO BALANCE_TRANSACTIONS
@@ -72,6 +94,5 @@
             , #{amount}
             , CURRENT_TIMESTAMP
         )
-
     </insert>
 </mapper>

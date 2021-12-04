@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface TransferMapper {
     String findTodayTotalAmount(TransferDto transferDto);
+    TransferDto find(TransferDto transferDto);
     int createBalanceTransaction(TransferDto transferDto);
     int createTransfer(TransferDto transferDto);
 }
