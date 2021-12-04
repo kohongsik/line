@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.naver.line.demo.account.mapper.AccountMapper">
+    <select id="findByUserIdToday" resultType="com.naver.line.demo.account.dto.AccountDto">
+        SELECT
+            ID
+            , USER_ID
+            , NUMBER
+            , AMOUNT
+            , STATUS
+            , TRANSFER_LIMIT
+            , DAILY_TRANSFER_LIMIT
+            , CREATED_AT
+            , UPDATED_AT
+        FROM ACCOUNTS
+        WHERE 1 = 1
+            AND USER_ID = #{userId}
+            AND TO_CHAR(CREATED_AT, 'YYYYMMDD') = TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')
+    </select>
+    <select id="findAccountCntByUserId" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM ACCOUNTS
+        WHERE 1 = 1
+            AND USER_ID = #{userId}
+            AND STATUS = 'ENABLE'
+    </select>
+    <select id="getRandomAccountNo" resultType="string">
+        SELECT (RAND()*10000000000)::INTEGER
+        FROM DUAL
+    </select>
+    <select id="checkNumberDupl" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM ACCOUNTS
+        WHERE 1 = 1
+            AND NUMBER = #{number}
+    </select>
+    <insert id="createAccount">
+        INSERT INTO ACCOUNTS
+        (
+            USER_ID
+            , NUMBER
+            , AMOUNT
+            , STATUS
+            , TRANSFER_LIMIT
+            , DAILY_TRANSFER_LIMIT
+            , CREATED_AT
+            , UPDATED_AT
+        ) VALUES (
+            #{userId}
+            , #{number}
+            , #{amount}
+            , #{status}
+            , #{transferLimit}
+            , #{dailyTransferLimit}
+            , CURRENT_TIMESTAMP
+            , CURRENT_TIMESTAMP
+        )
+    </insert>
+</mapper>

@@ -1,15 +1,28 @@
 package com.naver.line.demo.account;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.naver.line.demo.account.app.AccountService;
+import com.naver.line.demo.account.dto.AccountDto;
+import com.naver.line.demo.utils.ApiUtils;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import com.naver.line.demo.utils.ApiUtils.ApiResult;
 
+import static com.naver.line.demo.utils.ApiUtils.success;
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/accounts")
 public class AccountController {
+    final AccountService accountService;
   /**
    * 1. 계좌 개설
    */
-
+  @PostMapping()
+  public ApiResult<AccountDto> account (@RequestHeader("X-USER-ID") Integer userId,@RequestBody AccountDto accountDto) {
+      int ret = accountService.createAccount(userId, accountDto);
+      return success(accountDto);
+  }
   /**
    * 2. 계좌 비활성화
    */

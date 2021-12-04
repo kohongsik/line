@@ -56,7 +56,8 @@ public class GeneralExceptionHandler {
     IllegalArgumentException.class,
     IllegalStateException.class,
     ConstraintViolationException.class,
-    MethodArgumentNotValidException.class
+    MethodArgumentNotValidException.class,
+          NotValidException.class
   })
   public ResponseEntity<?> handleBadRequestException(Exception e) {
     log.debug("Bad request exception occurred: {}", e.getMessage(), e);
