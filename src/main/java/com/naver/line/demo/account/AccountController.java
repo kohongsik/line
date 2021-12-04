@@ -12,9 +12,9 @@ import static com.naver.line.demo.utils.ApiUtils.success;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/accounts")
+@RequestMapping(value = "/api/accounts", produces = "application/json")
 public class AccountController {
-    final AccountService accountService;
+  final AccountService accountService;
   /**
    * 1. 계좌 개설
    */
@@ -26,11 +26,15 @@ public class AccountController {
   /**
    * 2. 계좌 비활성화
    */
-
+  @DeleteMapping(value = "/{id}")
+  public ApiResult<AccountDto> disabledAccount (@RequestHeader("X-USER-ID") Integer userId, @PathVariable(value = "id") int id) {
+      AccountDto ret = accountService.disabledAccount(userId, id);
+      return success(ret);
+  }
   /**
    * 3. 계좌 이체 한도 수정
    */
-
+  
   /**
    * 5. 계좌 입출금 내역
    */

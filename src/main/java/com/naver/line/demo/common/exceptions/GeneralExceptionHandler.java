@@ -69,7 +69,13 @@ public class GeneralExceptionHandler {
     }
     return newResponse(e, HttpStatus.BAD_REQUEST);
   }
-  
+  @ExceptionHandler({
+          ForbiddenException.class
+  })
+  public ResponseEntity<?> handleForbiddenRequestException(Exception e) {
+    log.debug("Bad request exception occurred: {}", e.getMessage(), e);
+    return newResponse(e, HttpStatus.FORBIDDEN);
+  }
   @ExceptionHandler(HttpMediaTypeException.class)
   public ResponseEntity<?> handleHttpMediaTypeException(Exception e) {
     return newResponse(e, HttpStatus.UNSUPPORTED_MEDIA_TYPE);

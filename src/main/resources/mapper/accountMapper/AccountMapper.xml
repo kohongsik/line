@@ -19,7 +19,7 @@
             AND USER_ID = #{userId}
             AND TO_CHAR(CREATED_AT, 'YYYYMMDD') = TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')
     </select>
-    <select id="findByNumber" resultType="com.naver.line.demo.account.dto.AccountDto">
+    <select id="findByNumberOrId" resultType="com.naver.line.demo.account.dto.AccountDto">
         SELECT
             ID
              , USER_ID
@@ -32,7 +32,17 @@
              , UPDATED_AT
         FROM ACCOUNTS
         WHERE 1 = 1
-          AND NUMBER = #{number}
+        <choose>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(number)">
+                AND NUMBER = #{number}
+            </when>
+            <when test="@org.apache.commons.lang3.StringUtils@isNotEmpty(id)">
+                AND ID = #{id}
+            </when>
+            <otherwise>
+                AND 1 = 2
+            </otherwise>
+        </choose>
     </select>
     <select id="findAccountCntByUserId" resultType="int">
         SELECT
@@ -75,4 +85,11 @@
             , CURRENT_TIMESTAMP
         )
     </insert>
+    <update id="updateState">
+        UPDATE ACCOUNTS
+            SET STATUS = #{status}
+                , UPDATED_AT = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+            AND ID = #{id}
+    </update>
 </mapper>

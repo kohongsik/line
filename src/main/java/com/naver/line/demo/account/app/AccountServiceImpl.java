@@ -2,6 +2,7 @@ package com.naver.line.demo.account.app;
 
 import com.naver.line.demo.account.dto.AccountDto;
 import com.naver.line.demo.account.mapper.AccountMapper;
+import com.naver.line.demo.common.exceptions.ForbiddenException;
 import com.naver.line.demo.common.exceptions.NotValidException;
 import javassist.tools.web.BadHttpRequest;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +39,26 @@ public class AccountServiceImpl implements AccountService{
                 if (transferLimmit < 0 || transferLimmit > maxTransferLimit) hasErr = true;
                 if (dailyTranferLimit < 0 || dailyTranferLimit > maxDailyTransferLimit) hasErr = true;
                 break;
+            case "disabled" :
+                // 계좌를 찾을 수 없을 경우 404 Not Found으로 응답합니다.
+                if (param == null) {
+                    hasErr = true;
+                    break;
+                }
+                // 사용자가 계좌의 소유자가 아닌 경우 403 Forbidden으로 응답합니다.
+                int dbUserId = Integer.parseInt(param.getUserId());
+                if (dbUserId != userId) {
+                    // 403
+                    throw new ForbiddenException("forbidden exception");
+                }
+                // 사용자의 계좌의 상태가 이미 DISABLED인 경우 400 Bad Request로 응답합니다.
+                if ("DISABLED".equals(param.getStatus())) {
+                    hasErr = true;
+                }
+                // 사용자의 계좌의 잔액이 0원이 아닌 경우 400 Bad Request로 응답합니다.
+                if (new BigDecimal(param.getAmount()).compareTo(BigDecimal.ZERO) > 0) {
+                    hasErr = true;
+                }
         }
         if (hasErr) {
             throw new NotValidException("data is invalid.");
@@ -66,6 +88,7 @@ public class AccountServiceImpl implements AccountService{
             형식: 000-00-00000 > 전략 : 난수.
             응답으로 생성된 계좌 정보를 내려줍니다.
         */
+        isValidate("create", userId, accountDto);
         accountDto.setStatus("ENABLED");
         boolean createNumber = false;
         while(!createNumber) {
@@ -78,6 +101,19 @@ public class AccountServiceImpl implements AccountService{
             }
         }
         ret += accountMapper.createAccount(accountDto);
-        return accountMapper.findByNumber(accountDto);
+        return accountMapper.findByNumberOrId(accountDto);
+    }
+    @Override
+    public AccountDto disabledAccount(int userId, int id) {
+        /*
+            accounts 테이블에서 계좌 정보를 가져옵니다.
+            사용자의 계좌의 상태값을 DISABLED로 저장합니다.
+            응답으로 비활성화된 계좌 정보를 내려줍니다.
+        */
+        AccountDto dbData = accountMapper.findByNumberOrId(AccountDto.builder().id(String.valueOf(id)).build());
+        isValidate("disabled", userId, dbData);
+        dbData.setStatus("DISABLED");
+        accountMapper.updateState(dbData);
+        return accountMapper.findByNumberOrId(AccountDto.builder().id(String.valueOf(id)).build());
     }
 }
