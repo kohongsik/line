@@ -19,6 +19,21 @@
             AND USER_ID = #{userId}
             AND TO_CHAR(CREATED_AT, 'YYYYMMDD') = TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')
     </select>
+    <select id="findByNumber" resultType="com.naver.line.demo.account.dto.AccountDto">
+        SELECT
+            ID
+             , USER_ID
+             , NUMBER
+             , AMOUNT
+             , STATUS
+             , TRANSFER_LIMIT
+             , DAILY_TRANSFER_LIMIT
+             , CREATED_AT
+             , UPDATED_AT
+        FROM ACCOUNTS
+        WHERE 1 = 1
+          AND NUMBER = #{number}
+    </select>
     <select id="findAccountCntByUserId" resultType="int">
         SELECT
             COUNT(*)

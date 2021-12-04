@@ -8,6 +8,7 @@ import java.util.List;
 @Mapper
 public interface AccountMapper {
     List<AccountDto> findByUserIdToday(AccountDto accountDto);
+    AccountDto findByNumber(AccountDto accountDto);
     int findAccountCntByUserId(AccountDto accountDto);
     String getRandomAccountNo(AccountDto accountDto);
     int checkNumberDupl(AccountDto accountDto);

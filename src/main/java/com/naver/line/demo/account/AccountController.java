@@ -20,8 +20,8 @@ public class AccountController {
    */
   @PostMapping()
   public ApiResult<AccountDto> account (@RequestHeader("X-USER-ID") Integer userId,@RequestBody AccountDto accountDto) {
-      int ret = accountService.createAccount(userId, accountDto);
-      return success(accountDto);
+      AccountDto ret = accountService.createAccount(userId, accountDto);
+      return success(ret);
   }
   /**
    * 2. 계좌 비활성화

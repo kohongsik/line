@@ -50,7 +50,7 @@ public class AccountServiceImpl implements AccountService{
         }
     }
     @Override
-    public int createAccount(int userId, AccountDto accountDto) {
+    public AccountDto createAccount(int userId, AccountDto accountDto) {
         int ret = 0;
         accountDto.setUserId(String.valueOf(userId));
         /*
@@ -72,6 +72,6 @@ public class AccountServiceImpl implements AccountService{
             }
         }
         ret += accountMapper.createAccount(accountDto);
-        return ret;
+        return accountMapper.findByNumber(accountDto);
     }
 }
