@@ -20,6 +20,8 @@ public class AccountServiceImpl implements AccountService{
     final AccountMapper accountMapper;
     private void isValidate(String method, int userId, AccountDto param){
         boolean hasErr = false;
+        final int maxTransferLimit = 5000000;
+        final int maxDailyTransferLimit = 10000000;
         switch(method) {
             case "create" :
                 // 데이터 검증 로직.
@@ -30,6 +32,10 @@ public class AccountServiceImpl implements AccountService{
                 // 사용자가 이미 3개의 활성화된 계좌가 있는 경우 .
                 int cnt = accountMapper.findAccountCntByUserId(param);
                 if (cnt >= 3) hasErr = true;
+                int transferLimmit = Integer.parseInt(param.getTransferLimit());
+                int dailyTranferLimit = Integer.parseInt(param.getDailyTransferLimit());
+                if (transferLimmit < 0 || transferLimmit > maxTransferLimit) hasErr = true;
+                if (dailyTranferLimit < 0 || dailyTranferLimit > maxDailyTransferLimit) hasErr = true;
                 break;
         }
         if (hasErr) {
