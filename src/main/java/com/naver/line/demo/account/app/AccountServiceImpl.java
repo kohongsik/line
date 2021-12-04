@@ -77,11 +77,6 @@ public class AccountServiceImpl implements AccountService{
     }
     private void checkValid (AccountDto param) {
         if (
-                StringUtils.isEmpty(param.getId()) ||
-                StringUtils.isEmpty(param.getUserId()) ||
-                StringUtils.isEmpty(param.getNumber()) ||
-                StringUtils.isEmpty(param.getAmount()) ||
-                StringUtils.isEmpty(param.getStatus()) ||
                 StringUtils.isEmpty(param.getTransferLimit()) ||
                 StringUtils.isEmpty(param.getDailyTransferLimit())
         ) {

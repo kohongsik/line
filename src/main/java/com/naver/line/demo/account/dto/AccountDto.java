@@ -17,4 +17,5 @@ public class AccountDto {
     private String dailyTransferLimit; // not null
     private String createdAt; // not null , default now
     private String updatedAt;
+    private String type;
 }

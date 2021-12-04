@@ -100,4 +100,11 @@
         WHERE 1 = 1
             AND ID = #{id}
     </update>
+    <update id="updateAmount">
+        UPDATE ACCOUNTS
+        SET AMOUNT = DECODE(#{type}, 'ADD', AMOUNT + #{amount}, AMOUNT - #{amount})
+          , UPDATED_AT = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+          AND ID = #{id}
+    </update>
 </mapper>

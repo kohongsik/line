@@ -15,4 +15,5 @@ public interface AccountMapper {
     int createAccount(AccountDto accountDto);
     int updateState(AccountDto accountDto);
     int updateTransferLimit(AccountDto accountDto);
+    int updateAmount(AccountDto accountDto);
 }

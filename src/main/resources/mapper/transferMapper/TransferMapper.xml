@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.naver.line.demo.transfer.mapper.TransferMapper">
+    <select id="findTodayTotalAmount" resultType="string">
+        SELECT
+            SUM(AMOUNT)
+        FROM BALANCE_TRANSACTIONS
+        WHERE 1 = 1
+            AND USER_ID = #{userId}
+            AND ACCOUNT_ID
+            AND TO_CHAR(CREATED_AT, 'YYYYMMDD') = TO_CHAR(CURRENT_TIMESTAMP, 'YYYYMMDD')
+            AND TYPE = 'WITHDRAW'
+    </select>
+    <insert id="createBalanceTransaction">
+        INSERT INTO BALANCE_TRANSACTIONS
+        (
+            USER_ID
+            , ACCOUNT_ID
+            , TYPE
+            , AMOUNT
+            , BEFORE_BALANCE_AMOUNT
+            , NOTE
+            , CREATED_AT
+        ) VALUES (
+            #{userId}
+            , #{accountId}
+            , #{type}
+            , #{amount}
+            , #{beforeBalanceAmount}
+            , DECODE(NVL(#{note}, ''), '', (SELECT NAME FROM USERS WHERE ID = #{userId} LIMIT 1), #{note})
+            , CURRENT_TIMESTAMP
+        )
+    </insert>
+    <insert id="createTransfer">
+        INSERT INTO TRANSFERS
+        (
+            USER_ID
+            , WITHDRAW_ID
+            , DEPOSIT_ID
+            , AMOUNT
+            , CREATED_AT
+        ) VALUES (
+            #{userId}
+            , (
+                SELECT ID
+                FROM BALANCE_TRANSACTIONS
+                WHERE 1 = 1
+                    AND ACCOUNT_ID = (
+                        SELECT ID
+                        FROM ACCOUNTS
+                        WHERE 1 = 1
+                            AND NUMBER = #{senderAccountNumber}
+                        LIMIT 1
+                    )
+                ORDER BY CREATED_AT DESC
+                LIMIT 1
+            )
+            , (
+                SELECT ID
+                FROM BALANCE_TRANSACTIONS
+                WHERE 1 = 1
+                    AND ACCOUNT_ID = (
+                        SELECT ID
+                        FROM ACCOUNTS
+                        WHERE 1 = 1
+                            AND NUMBER = #{receiverAccountNumber}
+                        LIMIT 1
+                )
+                ORDER BY CREATED_AT DESC
+                LIMIT 1
+            )
+            , #{amount}
+            , CURRENT_TIMESTAMP
+        )
+
+    </insert>
+</mapper>
